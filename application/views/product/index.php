@@ -1,7 +1,6 @@
-<div class="container">
+<div class="container-fluid">
     <h1><?= $title ?></h1>
 
-    <a href="<?= base_url('product/add') ?>" class="btn btn-primary mt-2 mb-2">Tambah Data</a>
     <div class="responsive">
         <table class="table table-hover" id="table" style="width: 100%;">
             <thead class="thead-dark">

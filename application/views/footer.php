@@ -39,119 +39,6 @@
 <script>
     var tabel = null;
     $(document).ready(function() {
-        // tabel = $('#table').DataTable({
-        //     "responsive": true,
-        //     "ordering": true,
-        //     // "order": [
-        //     //     [0, 'asc']
-        //     // ], // Default sortingnya berdasarkan kolom / field ke 0 (paling pertama)
-        //     "ajax": "<?= base_url('product/get_data'); ?>",
-        //     "deferRender": true,
-        //     "aLengthMenu": [
-        //         [15, 50, 100, 500, 1000],
-        //         [15, 50, 100, 500, 1000]
-        //     ],
-        //     lengthChange: false,
-        //     "columns": [{
-        //             "data": 'prod_id',
-        //             "sortable": false,
-        //             render: function(data, type, row, meta) {
-        //                 return meta.row + meta.settings._iDisplayStart + 1;
-        //             }
-        //         }, {
-        //             "data": "prod_code"
-        //         },
-        //         {
-        //             "data": "cat_name"
-        //         },
-        //         {
-        //             "data": "akl_name"
-        //         },
-        //         {
-        //             "data": "akl_end"
-        //         },
-        //         {
-        //             "data": "akl_file"
-        //         },
-        //         {
-        //             "data": "prod_desc"
-        //         },
-        //         {
-        //             "data": "prod_id",
-        //             "sortable": false,
-        //             "render": function(data, type, row, meta) {
-        //                 let text = `<a href="<?= base_url('product/edit/') ?>${data}" class="btn btn-warning btn-sm">Edit</a>
-        //                             <a href="<?= base_url('product/destroy/') ?>${data}" class="btn btn-danger btn-sm" onclick="return confirm('Delete Data?');">Delete</a>`
-        //                 return text;
-        //             }
-        //         },
-        //     ],
-        //     buttons: [, {
-        //         text: '<i class="fa fa-plus"></i>Add',
-        //         className: 'btn btn-sm btn-primary bs-tooltip',
-        //         attr: {
-        //             'data-toggle': 'tooltip',
-        //             'title': 'Add Data'
-        //         },
-        //         action: function(e, dt, node, config) {
-        //             $('#modalAdd').modal('show');
-        //             $('#name').focus();
-        //         }
-        //     }, {
-        //         text: '<i class="fas fa-trash"></i>Del',
-        //         className: 'btn btn-sm btn-danger',
-        //         attr: {
-        //             'data-toggle': 'tooltip',
-        //             'title': 'Delete Selected Data'
-        //         },
-        //         action: function(e, dt, node, config) {
-        //             swal({
-        //                 title: 'Delete Selected Data?',
-        //                 text: "You won't be able to revert this!",
-        //                 type: 'warning',
-        //                 showCancelButton: true,
-        //                 confirmButtonText: '<i class="fa fa-thumbs-up"></i> Yes!',
-        //                 confirmButtonAriaLabel: 'Thumbs up, Yes!',
-        //                 cancelButtonText: '<i class="fa fa-thumbs-down"></i> No',
-        //                 cancelButtonAriaLabel: 'Thumbs down',
-        //                 padding: '2em',
-        //                 animation: false,
-        //                 customClass: 'animated tada',
-        //             }).then(function(result) {
-        //                 if (result.value) {
-        //                     var id = $('input[name="id[]"]:checked').length;
-        //                     if (id <= 0) {
-        //                         swal({
-        //                             title: 'Failed!',
-        //                             text: "No Selected Data!",
-        //                             type: 'error',
-        //                         })
-        //                     } else {
-        //                         $("#delete").submit();
-        //                     }
-        //                 }
-        //             })
-        //         }
-        //     }, {
-        //         extend: "colvis",
-        //         attr: {
-        //             'data-toggle': 'tooltip',
-        //             'title': 'Column Visible'
-        //         },
-        //         className: 'btn btn-sm btn-primary'
-        //     }, {
-        //         extend: "pageLength",
-        //         attr: {
-        //             'data-toggle': 'tooltip',
-        //             'title': 'Page Length'
-        //         },
-        //         className: 'btn btn-sm btn-info'
-        //     }],
-        //     initComplete: function() {
-        //         $('#table').DataTable().buttons().container().appendTo('#tableData_wrapper .col-md-6:eq(0)');
-        //     }
-        // });
-
         var table = $('#table').DataTable({
             // processing: true,
             // serverSide: true,
@@ -267,7 +154,41 @@
                     'title': 'Page Length'
                 },
                 className: 'btn btn-sm btn-info'
-            }]
+            }, {
+                extend: "collection",
+                text: '<i class="fas fa-download"></i>Export',
+                attr: {
+                    'data-toggle': 'tooltip',
+                    'title': 'Export Data'
+                },
+                className: 'btn btn-sm btn-primary',
+                buttons: [{
+                    extend: 'copy',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                }, {
+                    extend: 'csv',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                }, {
+                    extend: 'pdf',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                }, {
+                    extend: 'excel',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                }, {
+                    extend: 'print',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
+                }],
+            },]
         });
     });
 </script>
