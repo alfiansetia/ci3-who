@@ -38,8 +38,8 @@ class Product_model extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('products');
-        $this->db->join('category', 'category.cat_id = products.cat_id');
-        $this->db->join('akl', 'akl.akl_id = products.akl_id');
+        $this->db->join('category', 'category.cat_id = products.cat_id', 'left');
+        $this->db->join('akl', 'akl.akl_id = products.akl_id', 'left');
         $query = $this->db->get()->result();
         return $query;
     }

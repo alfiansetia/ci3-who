@@ -130,14 +130,14 @@ class Product extends CI_Controller
                     $i = 0;
                     $dataArr = array();
                     $handle = fopen($file, "r");
-                    while (($row = fgetcsv($handle, 2048))) {
+                    while (($row = fgetcsv($handle, 2048, ';'))) {
                         $i++;
                         if ($i == 1) continue;
                         $data = [
-                            'prod_code' => $row[0],
-                            'prod_desc' => $row[1],
-                            'cat_id' => $row[2],
-                            'akl_id' => $row[3],
+                            'prod_code' => $row[0] == '' ? null : $row[0],
+                            'prod_desc' => $row[1] == '' ? null : $row[1],
+                            'cat_id' => $row[2] == '' ? null : $row[2],
+                            'akl_id' => $row[3] == '' ? null : $row[3],
                         ];
                         $dataArr[$i] = [
                             'prod_code' => $row[0],
@@ -148,9 +148,10 @@ class Product extends CI_Controller
                         $this->Product_model->store_import($data);
                     }
                     fclose($handle);
-                    echo ('<pre>');
-                    var_dump($dataArr);
-                    echo ('</pre>');
+                    redirect('product');
+                    // echo ('<pre>');
+                    // var_dump($dataArr);
+                    // echo ('</pre>');
                 } else {
                     echo 'Format file tidak valid!';
                 }
