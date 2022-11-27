@@ -46,7 +46,7 @@ class Product_model extends CI_Model
 
     public function edit($id)
     {
-        return $this->db->get_where($this->table, ["id" => $id])->row();
+        return $this->db->get_where($this->table, ["prod_id" => $id])->row();
     }
 
     public function store()
@@ -68,12 +68,12 @@ class Product_model extends CI_Model
             'warna' => $post['warna'],
             'asal'  => $post['asal'],
         ];
-        return $this->db->update($this->table, $data, ['id' => $id]);
+        return $this->db->update($this->table, $data, ['prod_id' => $id]);
     }
 
     public function destroy($id)
     {
-        return $this->db->delete($this->table, ['id' => $id]);
+        return $this->db->delete($this->table, ['prod_id' => $id]);
     }
 
     

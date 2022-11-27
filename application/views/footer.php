@@ -58,14 +58,27 @@
 <?php if ($this->session->flashdata('message')) {
     echo $this->session->flashdata('message');
 } ?>
-
+<script>
+    function multiCheck(tb_var) {
+        tb_var.on("change", ".chk-parent", function() {
+                var e = $(this).closest("table").find("td:first-child .child-chk"),
+                    a = $(this).is(":checked");
+                $(e).each(function() {
+                    a ? ($(this).prop("checked", !0), $(this).closest("tr").addClass("active")) : ($(this).prop("checked", !1), $(this).closest("tr").removeClass("active"))
+                })
+            }),
+            tb_var.on("change", "tbody tr .new-control", function() {
+                $(this).parents("tr").toggleClass("active")
+            })
+    }
+</script>
 <script>
     var tabel = null;
     $(document).ready(function() {
         var table = $('#table').DataTable({
             // processing: true,
             // serverSide: true,
-            rowId: 'id',
+            rowId: 'prod_id',
             ajax: "<?= base_url('product/get_data/') ?>",
             dom: "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
                 "<'table-responsive'tr>" +
@@ -80,42 +93,35 @@
             ],
             pageLength: 10,
             lengthChange: false,
-            columnDefs: [{
-                targets: [0, 7],
-                className: "text-center",
-            }],
-            "columns": [{
-                    "data": 'prod_id',
+            order: [
+                [1, "asc"]
+            ],
+            columns: [{
+                    data: 'prod_id',
+                    className: "text-center",
+                    searchable: false,
+                    sortable: false,
                     render: function(data, type, row, meta) {
-                        return meta.row + meta.settings._iDisplayStart + 1;
+                        return `<input type="checkbox" name="id[]" value="${data}" class="new-control-input child-chk select-customers-info">`
                     }
                 }, {
-                    "data": "prod_code"
+                    data: "prod_code"
                 },
                 {
-                    "data": "cat_name"
+                    data: "cat_name"
                 },
                 {
-                    "data": "akl_name"
+                    data: "akl_name"
                 },
                 {
-                    "data": "akl_end"
+                    data: "akl_end"
                 },
                 {
-                    "data": "akl_file"
+                    data: "akl_file"
                 },
                 {
-                    "data": "prod_desc"
-                },
-                {
-                    "data": "prod_id",
-                    "sortable": false,
-                    "render": function(data, type, row, meta) {
-                        let text = `<a href="<?= base_url('product/edit/') ?>${data}" class="btn btn-warning btn-sm">Edit</a>
-                                    <a href="<?= base_url('product/destroy/') ?>${data}" class="btn btn-danger btn-sm" onclick="return confirm('Delete Data?');">Delete</a>`
-                        return text;
-                    }
-                },
+                    data: "prod_desc"
+                }
             ],
             buttons: [, {
                 text: '<i class="fa fa-plus"></i>Add',
@@ -136,32 +142,14 @@
                     'title': 'Delete Selected Data'
                 },
                 action: function(e, dt, node, config) {
-                    swal({
-                        title: 'Delete Selected Data?',
-                        text: "You won't be able to revert this!",
-                        type: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: '<i class="fa fa-thumbs-up"></i> Yes!',
-                        confirmButtonAriaLabel: 'Thumbs up, Yes!',
-                        cancelButtonText: '<i class="fa fa-thumbs-down"></i> No',
-                        cancelButtonAriaLabel: 'Thumbs down',
-                        padding: '2em',
-                        animation: false,
-                        customClass: 'animated tada',
-                    }).then(function(result) {
-                        if (result.value) {
-                            var id = $('input[name="id[]"]:checked').length;
-                            if (id <= 0) {
-                                swal({
-                                    title: 'Failed!',
-                                    text: "No Selected Data!",
-                                    type: 'error',
-                                })
-                            } else {
-                                $("#delete").submit();
-                            }
+                    var id = $('input[name="id[]"]:checked').length;
+                    if (id <= 0) {
+                        alert('No Selected Data !');
+                    } else {
+                        if (confirm('Delete Data?')) {
+                            $("#delete").submit();
                         }
-                    })
+                    }
                 }
             }, {
                 extend: "colvis",
@@ -211,7 +199,59 @@
                         columns: ':visible'
                     }
                 }],
-            }, ]
+            }],
+            headerCallback: function(e, a, t, n, s) {
+                e.getElementsByTagName("th")[0].innerHTML = '<input type="checkbox" class="new-control-input chk-parent select-customers-info" id="customer-all-info">'
+            },
+        });
+
+        var id;
+
+        multiCheck(table);
+
+        $('#table tbody').on('click', 'tr td:not(:first-child)', function() {
+            id = table.row(this).id()
+            $.ajax({
+                url: "<?= base_url('product/edit/') ?>" + id,
+                method: 'GET',
+                success: function(result) {
+                    console.log(result)
+                    $('#edit_reset').val(result.data.prod_id);
+                    $('#edit_id').val(result.data.prod_id);
+                    $('#edit_name').val(result.data.name);
+                },
+                beforeSend: function() {
+                    console.log('otw')
+                },
+                error: function(xhr, status, error) {
+                    er = xhr.responseJSON.errors
+                    alert('Server Error');
+                }
+            });
+            $('#modalEdit').modal('show');
+        });
+
+        $('#delete').submit(function(event) {
+            var form = this;
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: "<?= base_url('product/destroy') ?>",
+                data: $(form).serialize(),
+                beforeSend: function() {
+                    console.log('otw')
+                },
+                success: function(res) {
+                    table.ajax.reload();
+                    alert(res.message)
+
+                },
+                error: function(xhr, status, error) {
+                    er = xhr.responseJSON.errors
+                    console.log(er);
+                    alert('Server Error');
+                }
+            });
         });
     });
 </script>

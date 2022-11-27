@@ -45,7 +45,7 @@ class Product extends CI_Controller
         $this->load->view('footer');
     }
 
-    public function edit($id = null)
+    public function update($id = null)
     {
         if ($id == null) {
             // redirect('product');
@@ -74,15 +74,47 @@ class Product extends CI_Controller
         }
     }
 
-    public function destroy($id = null)
+    public function edit($id = null)
     {
-        if ($id == null) {
-            show_404();
+        $product = $this->Product_model->edit($id);
+        if (!$product) {
+            $data = [
+                'status'    => false,
+                'data'      => '',
+                'message'   => 'Data not found',
+            ];
         } else {
-            $this->Product_model->destroy($id);
-            $this->session->set_flashdata('message', '<script> alert("Data Berhasil Dihapus"); </script>');
-            redirect("product");
+            $data = [
+                'status'    => true,
+                'data'      => $product,
+                'message'   => '',
+            ];
         }
+        header('Content-Type: application/json');
+        echo json_encode($data);
+    }
+
+    public function destroy()
+    {
+        if ($this->input->post('id')) {
+            $ids = $this->input->post('id');
+            foreach ($ids as $id) {
+                $this->Product_model->destroy($id);
+            }
+            $data = [
+                'status'    => true,
+                'data'      => '',
+                'message'   => 'Data Deleted',
+            ];
+        } else {
+            $data = [
+                'status'    => false,
+                'data'      => '',
+                'message'   => 'Data required',
+            ];
+        }
+        header('Content-Type: application/json');
+        echo json_encode($data);
     }
 
     public function import()
