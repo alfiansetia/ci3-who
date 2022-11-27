@@ -2,10 +2,10 @@
     <h1><?= $title ?></h1>
 
     <div class="responsive">
-        <table class="table table-hover" id="table" style="width: 100%;">
+        <table class="table table-sm table-hover" id="table" style="width: 100%;">
             <thead class="thead-dark">
                 <tr>
-                    <th class="text-center">#</th>
+                    <th class="text-center" style="width: 30px;">No</th>
                     <th>Name</th>
                     <th>Cat</th>
                     <th>AKL</th>
