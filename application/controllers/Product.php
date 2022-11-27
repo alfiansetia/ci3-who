@@ -84,4 +84,64 @@ class Product extends CI_Controller
             redirect("product");
         }
     }
+
+    public function import()
+    {
+        // var_dump($_POST);
+        if (isset($_POST['submit'])) {
+            $file = $_FILES['product']['tmp_name'];
+            $ekstensi  = explode('.', $_FILES['product']['name']);
+            if (empty($file)) {
+                echo 'File tidak boleh kosong!';
+            } else {
+                if (strtolower(end($ekstensi)) === 'csv' && $_FILES["product"]["size"] > 0) {
+                    $i = 0;
+                    $dataArr = array();
+                    $handle = fopen($file, "r");
+                    while (($row = fgetcsv($handle, 2048))) {
+                        $i++;
+                        if ($i == 1) continue;
+                        // $data = [
+                        //     'nama' => $row[1],
+                        //     'no_hp' => $row[2],
+                        //     'email' => $row[3],
+                        //     'alamat' => $row[4],
+                        // ];
+                        $dataArr[$i] = [
+                            'prod_code' => $row[0],
+                            'prod_desc' => $row[1],
+                            'cat_id' => $row[2],
+                            'akl_id' => $row[3],
+                        ];
+                        // $this->pelanggan->save($data);
+                    }
+                    fclose($handle);
+                    echo ('<pre>');
+                    var_dump($dataArr);
+                    echo ('</pre>');
+                } else {
+                    echo 'Format file tidak valid!';
+                }
+            }
+        }
+
+        // $file = base_url('assets/product.csv');
+        // $file = fopen($file, "r");
+        // $i = 0;
+        // $numberOfFields = 4;
+        // $csvArr = array();
+
+        // while (($filedata = fgetcsv($file, 1000, ",")) !== FALSE) {
+        //     $num = count($filedata);
+        //     if ($i > 0 && $num == $numberOfFields) {
+        //         $csvArr[$i]['name'] = $filedata[0];
+        //         $csvArr[$i]['email'] = $filedata[1];
+        //         $csvArr[$i]['phone'] = $filedata[2];
+        //         $csvArr[$i]['created_at'] = $filedata[3];
+        //     }
+        //     $i++;
+        // }
+        // fclose($file);
+        // print_r($csvArr);
+    }
 }

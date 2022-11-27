@@ -142,4 +142,16 @@ class Datatables extends CI_Controller
         header('Content-Type: application/json');
         echo $this->M_Datatables->get_tables_query($query, $search, $where, $isWhere);
     }
+
+    public function store_import($param)
+    {
+        $post = $this->input->post();
+        $data = [
+            'prod_code'  => $param['nama'],
+            'prod_desc' => $param['warna'],
+            'cat_id'    => $param['asal'],
+            'akl_id'    => $param['asal'],
+        ];
+        return $this->db->insert($this->table, $data);
+    }
 }
