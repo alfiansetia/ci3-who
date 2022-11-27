@@ -101,19 +101,19 @@ class Product extends CI_Controller
                     while (($row = fgetcsv($handle, 2048))) {
                         $i++;
                         if ($i == 1) continue;
-                        // $data = [
-                        //     'nama' => $row[1],
-                        //     'no_hp' => $row[2],
-                        //     'email' => $row[3],
-                        //     'alamat' => $row[4],
-                        // ];
+                        $data = [
+                            'prod_code' => $row[0],
+                            'prod_desc' => $row[1],
+                            'cat_id' => $row[2],
+                            'akl_id' => $row[3],
+                        ];
                         $dataArr[$i] = [
                             'prod_code' => $row[0],
                             'prod_desc' => $row[1],
                             'cat_id' => $row[2],
                             'akl_id' => $row[3],
                         ];
-                        // $this->pelanggan->save($data);
+                        $this->Product_model->store_import($data);
                     }
                     fclose($handle);
                     echo ('<pre>');
