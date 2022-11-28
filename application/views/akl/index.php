@@ -206,7 +206,7 @@
             event.preventDefault();
             $.ajax({
                 type: 'POST',
-                url: "<?= base_url('product/destroy') ?>",
+                url: "<?= base_url('akl/destroy') ?>",
                 data: $(form).serialize(),
                 beforeSend: function() {
                     console.log('otw')
