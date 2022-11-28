@@ -1,26 +1,26 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Product extends CI_Controller
+class Akl extends CI_Controller
 {
     public function __construct()
     {
         parent::__construct();
-        $this->load->model("Product_model");
+        $this->load->model("Akl_model");
     }
 
     public function index()
     {
-        $data["title"] = "Data Product";
-        $data["product"] = $this->Product_model->get();
-        $this->template->load('template', 'product/index', $data);
+        $data["title"] = "Data AKL";
+        $data["akl"] = $this->Akl_model->get();
+        $this->template->load('template', 'akl/index', $data);
     }
 
     public function get_data()
     {
         $data = [
             'status' => true,
-            'data' => $this->Product_model->get_join(),
+            'data' => $this->Akl_model->get(),
             'message' => ''
         ];
         header('Content-Type: application/json');
@@ -29,43 +29,42 @@ class Product extends CI_Controller
 
     public function add()
     {
-        $product = $this->Product_model;
+        $akl = $this->Akl_model;
         $validation = $this->form_validation;
-        $validation->set_rules($product->rules());
+        $validation->set_rules($akl->rules());
         if ($validation->run()) {
-            $product->store();
+            $akl->store();
             $this->session->set_flashdata('message', '<script> alert("Data Berhasil Disimpan"); </script>');
-            redirect("product");
+            redirect("akl");
         }
-        $data["title"] = "Tambah Product";
+        $data["title"] = "Tambah AKL";
         $this->load->view('header', $data);
-        $this->load->view('product/add', $data);
+        $this->load->view('akl/add', $data);
         $this->load->view('footer');
     }
 
     public function update($id = null)
     {
         if ($id == null) {
-            // redirect('product');
+            // redirect('akl');
             show_404();
         } else {
-            $product = $this->Product_model;
+            $akl = $this->Akl_model;
             $validation = $this->form_validation;
-            $validation->set_rules($product->rules());
+            $validation->set_rules($akl->rules());
 
             if ($validation->run()) {
-                $product->update($id);
+                $akl->update($id);
                 $this->session->set_flashdata('message', '<script> alert("Data Berhasil Diupdate"); </script>');
-                redirect("product");
+                redirect("akl");
             } else {
-                $data["title"] = "Edit Product";
-                $data["product"] = $product->edit($id);
-
-                if (!$data["product"]) {
+                $data["title"] = "Edit AKL";
+                $data["akl"] = $akl->edit($id);
+                if (!$data["akl"]) {
                     show_404();
                 } else {
                     $this->load->view('header', $data);
-                    $this->load->view('product/edit', $data);
+                    $this->load->view('akl/edit', $data);
                     $this->load->view('footer');
                 }
             }
@@ -74,8 +73,8 @@ class Product extends CI_Controller
 
     public function edit($id = null)
     {
-        $product = $this->Product_model->edit($id);
-        if (!$product) {
+        $akl = $this->Akl_model->edit($id);
+        if (!$akl) {
             $data = [
                 'status'    => false,
                 'data'      => '',
@@ -84,7 +83,7 @@ class Product extends CI_Controller
         } else {
             $data = [
                 'status'    => true,
-                'data'      => $product,
+                'data'      => $akl,
                 'message'   => '',
             ];
         }
@@ -97,7 +96,7 @@ class Product extends CI_Controller
         if ($this->input->post('id')) {
             $ids = $this->input->post('id');
             foreach ($ids as $id) {
-                $this->Product_model->destroy($id);
+                $this->Akl_model->destroy($id);
             }
             $data = [
                 'status'    => true,
@@ -119,12 +118,12 @@ class Product extends CI_Controller
     {
         // var_dump($_POST);
         if (isset($_POST['submit'])) {
-            $file = $_FILES['product']['tmp_name'];
-            $ekstensi  = explode('.', $_FILES['product']['name']);
+            $file = $_FILES['akl']['tmp_name'];
+            $ekstensi  = explode('.', $_FILES['akl']['name']);
             if (empty($file)) {
                 echo 'File tidak boleh kosong!';
             } else {
-                if (strtolower(end($ekstensi)) === 'csv' && $_FILES["product"]["size"] > 0) {
+                if (strtolower(end($ekstensi)) === 'csv' && $_FILES["akl"]["size"] > 0) {
                     $i = 0;
                     $dataArr = array();
                     $handle = fopen($file, "r");
@@ -143,10 +142,10 @@ class Product extends CI_Controller
                             'cat_id' => $row[2],
                             'akl_id' => $row[3],
                         ];
-                        $this->Product_model->store_import($data);
+                        $this->Akl_model->store_import($data);
                     }
                     fclose($handle);
-                    redirect('product');
+                    redirect('akl');
                     // echo ('<pre>');
                     // var_dump($dataArr);
                     // echo ('</pre>');
@@ -155,24 +154,5 @@ class Product extends CI_Controller
                 }
             }
         }
-
-        // $file = base_url('assets/product.csv');
-        // $file = fopen($file, "r");
-        // $i = 0;
-        // $numberOfFields = 4;
-        // $csvArr = array();
-
-        // while (($filedata = fgetcsv($file, 1000, ",")) !== FALSE) {
-        //     $num = count($filedata);
-        //     if ($i > 0 && $num == $numberOfFields) {
-        //         $csvArr[$i]['name'] = $filedata[0];
-        //         $csvArr[$i]['email'] = $filedata[1];
-        //         $csvArr[$i]['phone'] = $filedata[2];
-        //         $csvArr[$i]['created_at'] = $filedata[3];
-        //     }
-        //     $i++;
-        // }
-        // fclose($file);
-        // print_r($csvArr);
     }
 }
