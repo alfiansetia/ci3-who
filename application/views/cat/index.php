@@ -8,10 +8,6 @@
                     <tr>
                         <th class="text-center" style="width: 30px;">No</th>
                         <th>Name</th>
-                        <th>Cat</th>
-                        <th>AKL</th>
-                        <th>AKL END</th>
-                        <th>AKL FILE</th>
                         <th>Desc</th>
                     </tr>
                 </thead>
@@ -32,15 +28,16 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="<?= base_url('product/import') ?>" method="POST" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <input type="file" name="product" id="product" class="form-control-file">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <div class="modal-body">
+                <form action="<?= base_url('product/import') ?>" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="product" id="product" class="form-control">
                     <button name="submit" value="OK" type="submit" class="btn btn-primary">SAVE</button>
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
         </div>
     </div>
 </div>
@@ -51,8 +48,8 @@
         var table = $('#table').DataTable({
             // processing: true,
             // serverSide: true,
-            rowId: 'prod_id',
-            ajax: "<?= base_url('product/get_data/') ?>",
+            rowId: 'akl_id',
+            ajax: "<?= base_url('cat/get_data/') ?>",
             dom: "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
                 "<'table-responsive'tr>" +
                 "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
@@ -70,7 +67,7 @@
                 [1, "asc"]
             ],
             columns: [{
-                    data: 'prod_id',
+                    data: 'cat_id',
                     className: "text-center",
                     searchable: false,
                     sortable: false,
@@ -78,22 +75,10 @@
                         return `<input type="checkbox" name="id[]" value="${data}" class="new-control-input child-chk select-customers-info">`
                     }
                 }, {
-                    data: "prod_code"
-                },
-                {
                     data: "cat_name"
                 },
                 {
-                    data: "akl_name"
-                },
-                {
-                    data: "akl_end"
-                },
-                {
-                    data: "akl_file"
-                },
-                {
-                    data: "prod_desc"
+                    data: "cat_desc"
                 }
             ],
             buttons: [, {
@@ -185,7 +170,7 @@
         $('#table tbody').on('click', 'tr td:not(:first-child)', function() {
             id = table.row(this).id()
             $.ajax({
-                url: "<?= base_url('product/edit/') ?>" + id,
+                url: "<?= base_url('cat/edit/') ?>" + id,
                 method: 'GET',
                 success: function(result) {
                     console.log(result)
@@ -209,7 +194,7 @@
             event.preventDefault();
             $.ajax({
                 type: 'POST',
-                url: "<?= base_url('product/destroy') ?>",
+                url: "<?= base_url('cat/destroy') ?>",
                 data: $(form).serialize(),
                 beforeSend: function() {
                     console.log('otw')

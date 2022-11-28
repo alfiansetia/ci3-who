@@ -33,6 +33,11 @@ class Product_model extends CI_Model
         return $this->db->get($this->table)->result();
     }
 
+    public function get_by_code($code)
+    {
+        return $this->db->get_where($this->table, ["prod_code" => $code])->row();
+    }
+
 
     public function get_join()
     {
@@ -60,6 +65,17 @@ class Product_model extends CI_Model
         return $this->db->insert($this->table, $data);
     }
 
+    public function store_import($param)
+    {
+        $data = [
+            'prod_code' => $param['prod_code'],
+            'prod_desc' => $param['prod_desc'],
+            'cat_id'    => $param['cat_id'],
+            'akl_id'    => $param['akl_id'],
+        ];
+        return $this->db->insert($this->table, $data);
+    }
+
     public function update($id)
     {
         $post = $this->input->post();
@@ -71,21 +87,19 @@ class Product_model extends CI_Model
         return $this->db->update($this->table, $data, ['prod_id' => $id]);
     }
 
-    public function destroy($id)
-    {
-        return $this->db->delete($this->table, ['prod_id' => $id]);
-    }
-
-    
-    public function store_import($param)
+    public function update_import($id, $param)
     {
         $data = [
-            'prod_code'  => $param['prod_code'],
+            'prod_code' => $param['prod_code'],
             'prod_desc' => $param['prod_desc'],
             'cat_id'    => $param['cat_id'],
             'akl_id'    => $param['akl_id'],
         ];
-        return $this->db->insert($this->table, $data);
+        return $this->db->update($this->table, $data, ['cat_id' => $id]);
+    }
+
+    public function destroy($id)
+    {
+        return $this->db->delete($this->table, ['prod_id' => $id]);
     }
 }
-

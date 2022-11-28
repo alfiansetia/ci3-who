@@ -15,10 +15,12 @@
             <li class="nav-item <?= $title == 'Data Product' ? "active" : '' ?>">
                 <a class="nav-link" href="<?= base_url('product'); ?>">Product</a>
             </li>
+            <li class="nav-item <?= $title == 'Data Category' ? "active" : '' ?>">
+                <a class="nav-link" href="<?= base_url('cat'); ?>">Category</a>
+            </li>
             <li class="nav-item <?= $title == 'Data AKL' ? "active" : '' ?>">
                 <a class="nav-link" href="<?= base_url('akl'); ?>">AKL</a>
             </li>
-
         </ul>
     </div>
 </nav>

@@ -1,9 +1,9 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
-class Akl_model extends CI_Model
+class Cat_model extends CI_Model
 {
 
-    private $table = "akl";
+    private $table = "category";
 
     public function rules()
     {
@@ -35,12 +35,12 @@ class Akl_model extends CI_Model
 
     public function get_by_name($name)
     {
-        return $this->db->get_where($this->table, ["akl_name" => $name])->row();
+        return $this->db->get_where($this->table, ["cat_name" => $name])->row();
     }
 
     public function edit($id)
     {
-        return $this->db->get_where($this->table, ["akl_id" => $id])->row();
+        return $this->db->get_where($this->table, ["cat_id" => $id])->row();
     }
 
     public function store()
@@ -57,10 +57,8 @@ class Akl_model extends CI_Model
     public function store_import($param)
     {
         $data = [
-            'akl_name'  => $param['akl_name'],
-            'akl_start' => $param['akl_start'],
-            'akl_end'   => $param['akl_end'],
-            'akl_file'  => $param['akl_file'],
+            'cat_name'  => $param['cat_name'],
+            'cat_desc'  => $param['cat_desc'],
         ];
         return $this->db->insert($this->table, $data);
     }
@@ -73,23 +71,20 @@ class Akl_model extends CI_Model
             'warna' => $post['warna'],
             'asal'  => $post['asal'],
         ];
-        return $this->db->update($this->table, $data, ['akl_id' => $id]);
+        return $this->db->update($this->table, $data, ['cat_id' => $id]);
     }
 
     public function update_import($id, $param)
     {
         $data = [
-            'akl_name'  => $param['akl_name'],
-            'akl_start' => $param['akl_start'],
-            'akl_end'   => $param['akl_end'],
-            'akl_desc'  => $param['akl_desc'],
-            'akl_file'  => $param['akl_file'],
+            'cat_name'  => $param['cat_name'],
+            'cat_desc'  => $param['cat_desc'],
         ];
-        return $this->db->update($this->table, $data, ['akl_id' => $id]);
+        return $this->db->update($this->table, $data, ['cat_id' => $id]);
     }
 
     public function destroy($id)
     {
-        return $this->db->delete($this->table, ['akl_id' => $id]);
+        return $this->db->delete($this->table, ['cat_id' => $id]);
     }
 }
