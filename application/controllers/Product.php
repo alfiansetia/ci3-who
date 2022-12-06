@@ -163,10 +163,10 @@ class Product extends CI_Controller
                                 $akl_id = $akl->akl_id;
                                 $this->Akl_model->update_import($akl_id, [
                                     'akl_name'  => $akl_name,
-                                    'akl_start' => $akl_start,
-                                    'akl_end'   => $akl_end,
-                                    'akl_desc'  => $akl_desc,
-                                    'akl_file'  => $akl_file,
+                                    'akl_start' => $akl_start == null ? $akl->akl_start : $akl_start,
+                                    'akl_end'   => $akl_end == null ? $akl->akl_end : $akl_end,
+                                    'akl_desc'  => $akl_desc == null ? $akl->akl_desc : $akl_desc,
+                                    'akl_file'  => $akl_file == null ? $akl->akl_file : $akl_file,
                                 ]);
                             } else {
                                 $this->Akl_model->store_import([
@@ -176,6 +176,7 @@ class Product extends CI_Controller
                                     'akl_desc'  => $akl_desc,
                                     'akl_file'  => $akl_file,
                                 ]);
+                                $akl_id = $this->db->insert_id();
                             }
                         }
 
@@ -185,13 +186,14 @@ class Product extends CI_Controller
                                 $cat_id = $cat->cat_id;
                                 $this->Cat_model->update_import($cat_id, [
                                     'cat_name'  => $cat_name,
-                                    'cat_desc'  => $cat_desc,
+                                    'cat_desc'  => $cat_desc == null ? $cat->cat_desc : $cat_desc,
                                 ]);
                             } else {
                                 $this->Cat_model->store_import([
                                     'cat_name'  => $cat_name,
                                     'cat_desc'  => $cat_desc,
                                 ]);
+                                $cat_id = $this->db->insert_id();
                             }
                         }
 
@@ -201,9 +203,9 @@ class Product extends CI_Controller
                                 $prod_id = $prod->prod_id;
                                 $this->Product_model->update_import($prod_id, [
                                     'prod_code' => $prod_code,
-                                    'prod_desc' => $prod_desc,
-                                    'cat_id'    => $cat_id,
-                                    'akl_id'    => $akl_id,
+                                    'prod_desc' => $prod_desc == null ? $prod->prod_desc : $prod_desc,
+                                    'cat_id'    => $cat_id == null ? $prod->cat_id : $cat_id,
+                                    'akl_id'    => $akl_id == null ? $prod->akl_id : $akl_id,
                                 ]);
                             } else {
                                 $this->Product_model->store_import([
