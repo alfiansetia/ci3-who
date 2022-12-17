@@ -125,19 +125,15 @@ class Product extends CI_Controller
 
     public function import()
     {
-        if (isset($_POST['submit'])) {
+        $post = $this->input->post(null, TRUE);
+        if (isset($post['submit'])) {
             $file = $_FILES['product']['tmp_name'];
             $ekstensi  = explode('.', $_FILES['product']['name']);
             if (empty($file)) {
-                $dataJSON = [
-                    'status'    => false,
-                    'data'      => '',
-                    'message'   => "FILE CAN'T EMPTY!",
-                ];
+                $this->session->set_flashdata('message', '<script> alert("FILE CAN,T EMPTY!"); </script>');
             } else {
                 if (strtolower(end($ekstensi)) === 'csv' && $_FILES["product"]["size"] > 0) {
                     $i = 0;
-                    $dataArr = array();
                     $handle = fopen($file, "r");
                     while (($row = fgetcsv($handle, 2048, ';'))) {
                         $i++;
@@ -148,110 +144,117 @@ class Product extends CI_Controller
 
                         $akl_id = null;
                         $akl_name = $row[2] == '' || $row[2] == '-' || $row[2] == 'FALSE' ? null : $row[2];
-                        $akl_start = $row[3] == '' ? null : date('Y-m-d', strtotime(str_replace('/', '-', $row[3])));
-                        $akl_end = $row[4] == '' ? null : date('Y-m-d', strtotime(str_replace('/', '-', $row[4])));
+                        $akl_start = $row[3] == '' || $row[3] == '-' || $row[3] == 'FALSE' ? null : date('Y-m-d', strtotime(str_replace('/', '-', $row[3])));
+                        $akl_end = $row[4] == '' || $row[4] == '-' || $row[4] == 'FALSE' ? null : date('Y-m-d', strtotime(str_replace('/', '-', $row[4])));
                         $akl_file = strtoupper($row[5]) != 'V' ? null : strtoupper($row[5]);
-                        $akl_desc = $row[6] == '' ? null : $row[6];
+                        $akl_desc = $row[6] == '' || $row[6] == '-' || $row[6] == 'FALSE' ? null : $row[6];
 
                         $cat_id = null;
-                        $cat_name = $row[7] == '' ? null : $row[7];
-                        $cat_desc = $row[8] == '' ? null : $row[8];
+                        $cat_name = $row[7] == '' || $row[7] == '-' || $row[7] == 'FALSE' ? null : $row[7];
+                        $cat_desc = $row[8] == '' || $row[8] == '-' || $row[8] == 'FALSE' ? null : $row[8];
 
-                        if ($akl_name != null) {
-                            $akl = $this->Akl_model->get_by_name($akl_name);
-                            if ($akl) {
-                                $akl_id = $akl->akl_id;
-                                $this->Akl_model->update_import($akl_id, [
-                                    'akl_name'  => $akl_name,
-                                    'akl_start' => $akl_start == null ? $akl->akl_start : $akl_start,
-                                    'akl_end'   => $akl_end == null ? $akl->akl_end : $akl_end,
-                                    'akl_desc'  => $akl_desc == null ? $akl->akl_desc : $akl_desc,
-                                    'akl_file'  => $akl_file == null ? $akl->akl_file : $akl_file,
-                                ]);
-                            } else {
-                                $this->Akl_model->store_import([
-                                    'akl_name'  => $akl_name,
-                                    'akl_start' => $akl_start,
-                                    'akl_end'   => $akl_end,
-                                    'akl_desc'  => $akl_desc,
-                                    'akl_file'  => $akl_file,
-                                ]);
-                                $akl_id = $this->db->insert_id();
+                        $param = [
+                            'prod_code' => $prod_code,
+                            'prod_desc' => $prod_desc,
+                        ];
+
+                        if (isset($post['akl']) && $post['akl'] == 'true') {
+                            if ($akl_name != null) {
+                                $akl = $this->Akl_model->get_by_name($akl_name);
+                                if ($akl) {
+                                    $akl_id = $akl->akl_id;
+                                    $this->Akl_model->update_import($akl->akl_id, [
+                                        'akl_name'  => $akl_name,
+                                        'akl_start' => $akl_start,
+                                        'akl_end'   => $akl_end,
+                                        'akl_desc'  => $akl_desc,
+                                        'akl_file'  => $akl_file,
+                                    ]);
+                                } else {
+                                    $this->Akl_model->store_import([
+                                        'akl_name'  => $akl_name,
+                                        'akl_start' => $akl_start,
+                                        'akl_end'   => $akl_end,
+                                        'akl_desc'  => $akl_desc,
+                                        'akl_file'  => $akl_file,
+                                    ]);
+                                    $akl_id = $this->db->insert_id();
+                                }
                             }
+                            $param['akl_id'] = $akl_id;
                         }
 
-                        if ($cat_name != null) {
-                            $cat = $this->Cat_model->get_by_name($cat_name);
-                            if ($cat) {
-                                $cat_id = $cat->cat_id;
-                                $this->Cat_model->update_import($cat_id, [
-                                    'cat_name'  => $cat_name,
-                                    'cat_desc'  => $cat_desc == null ? $cat->cat_desc : $cat_desc,
-                                ]);
-                            } else {
-                                $this->Cat_model->store_import([
-                                    'cat_name'  => $cat_name,
-                                    'cat_desc'  => $cat_desc,
-                                ]);
-                                $cat_id = $this->db->insert_id();
+                        if (isset($post['cat']) && $post['cat'] == 'true') {
+                            if ($cat_name != null) {
+                                $cat = $this->Cat_model->get_by_name($cat_name);
+                                if ($cat) {
+                                    $cat_id = $cat->cat_id;
+                                    $this->Cat_model->update_import($cat->cat_id, [
+                                        'cat_name'  => $cat_name,
+                                        'cat_desc'  => $cat_desc,
+                                    ]);
+                                } else {
+                                    $this->Cat_model->store_import([
+                                        'cat_name'  => $cat_name,
+                                        'cat_desc'  => $cat_desc,
+                                    ]);
+                                    $cat_id = $this->db->insert_id();
+                                }
                             }
+                            $param['cat_id'] = $cat_id;
                         }
 
                         if ($prod_code != null) {
                             $prod = $this->Product_model->get_by_code($prod_code);
                             if ($prod) {
                                 $prod_id = $prod->prod_id;
-                                $this->Product_model->update_import($prod_id, [
-                                    'prod_code' => $prod_code,
-                                    'prod_desc' => $prod_desc == null ? $prod->prod_desc : $prod_desc,
-                                    'cat_id'    => $cat_id == null ? $prod->cat_id : $cat_id,
-                                    'akl_id'    => $akl_id == null ? $prod->akl_id : $akl_id,
-                                ]);
+                                $this->Product_model->update_import($prod_id, $param);
                             } else {
-                                $this->Product_model->store_import([
-                                    'prod_code' => $prod_code,
-                                    'prod_desc' => $prod_desc,
-                                    'cat_id'    => $cat_id,
-                                    'akl_id'    => $akl_id,
-                                ]);
+                                $this->Product_model->store_import($param);
                             }
                         }
-
-                        // $data = [
-                        //     'prod_code' => $prod_code,
-                        //     'prod_desc' => $prod_desc,
-                        //     'cat_id'    => $cat_id,
-                        //     'akl_id'    => $akl_id,
-                        // ];
-                        // $this->Product_model->store_import($data);
+                        // echo ('<pre>');
+                        // var_dump($param);
+                        // echo ('</pre>');
                     }
                     fclose($handle);
                     // redirect('product');
                     // echo ('<pre>');
-                    // var_dump($dataArr);
+                    // var_dump($param);
                     // echo ('</pre>');
-                    $dataJSON = [
-                        'status'    => true,
-                        'data'      => '',
-                        'message'   => "SUCCESS IMPORT DATA!",
-                    ];
+                    // $dataJSON = [
+                    //     'status'    => true,
+                    //     'data'      => '',
+                    //     'message'   => "SUCCESS IMPORT DATA!",
+                    // ];
+                    $this->session->set_flashdata('message', '<script> alert("SUCCESS IMPORT DATA!"); </script>');
                 } else {
-                    $dataJSON = [
-                        'status'    => false,
-                        'data'      => '',
-                        'message'   => "FILE NOT VALID!",
-                    ];
+                    $this->session->set_flashdata('message', '<script> alert("FILE NOT VALID!"); </script>');
                 }
             }
-        }else{
-            $dataJSON = [
-                'status'    => false,
-                'data'      => '',
-                'message'   => 'NOT FOUND!',
-            ];
+        } else {
+            show_404();
         }
-        header('Content-Type: application/json');
-        echo json_encode($dataJSON);
+        // if (isset($post['akl']) && $post['akl'] == true) {
+        //     $dataJSON = true;
+        // } else {
+        //     $dataJSON = false;
+        // }
+        // $dataJSON = [
+        //     'a' => 'a',
+        //     'b' => 'b'
+        // ];
+        // $dataJSON['c'] = 'c';
+        // header('Content-Type: application/json');
+        // echo json_encode($dataJSON);
+        // var_dump($_POST);
+        redirect('product');
+    }
 
+
+    public function tes($id)
+    {
+        $data = $this->db->update('products', ['akl_id' => null], ['prod_id' => $id]);
+        var_dump($data);
     }
 }

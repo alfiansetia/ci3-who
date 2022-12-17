@@ -65,17 +65,6 @@ class Product_model extends CI_Model
         return $this->db->insert($this->table, $data);
     }
 
-    public function store_import($param)
-    {
-        $data = [
-            'prod_code' => $param['prod_code'],
-            'prod_desc' => $param['prod_desc'],
-            'cat_id'    => $param['cat_id'],
-            'akl_id'    => $param['akl_id'],
-        ];
-        return $this->db->insert($this->table, $data);
-    }
-
     public function update($id)
     {
         $post = $this->input->post();
@@ -87,15 +76,14 @@ class Product_model extends CI_Model
         return $this->db->update($this->table, $data, ['prod_id' => $id]);
     }
 
+    public function store_import($param)
+    {
+        return $this->db->insert($this->table, $param);
+    }
+
     public function update_import($id, $param)
     {
-        $data = [
-            'prod_code' => $param['prod_code'],
-            'prod_desc' => $param['prod_desc'],
-            'cat_id'    => $param['cat_id'],
-            'akl_id'    => $param['akl_id'],
-        ];
-        return $this->db->update($this->table, $data, ['cat_id' => $id]);
+        return $this->db->update($this->table, $param, ['prod_id' => $id]);
     }
 
     public function destroy($id)

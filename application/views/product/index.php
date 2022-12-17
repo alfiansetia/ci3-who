@@ -34,7 +34,20 @@
             </div>
             <form action="<?= base_url('product/import') ?>" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
-                    <input type="file" name="product" id="product" class="form-control-file">
+                    <div class="form-group mb-3">
+                        <label for="product">File :</label>
+                        <input type="file" name="product" id="product" class="form-control-file">
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check form-check-inline">
+                            <input name="akl" class="form-check-input" type="checkbox" id="akl" value="true">
+                            <label class="form-check-label" for="akl">AKL</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input name="cat" class="form-check-input" type="checkbox" id="cat" value="true">
+                            <label class="form-check-label" for="cat">Cat</label>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
