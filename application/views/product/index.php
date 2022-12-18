@@ -91,22 +91,40 @@
                         return `<input type="checkbox" name="id[]" value="${data}" class="new-control-input child-chk select-customers-info">`
                     }
                 }, {
-                    data: "prod_code"
+                    data: "prod_code",
                 },
                 {
-                    data: "cat_name"
+                    data: "cat_name",
                 },
                 {
-                    data: "akl_name"
+                    data: "akl_name",
                 },
                 {
-                    data: "akl_end"
+                    data: "akl_end",
+                    render: function(data, type, row, meta) {
+                        let text;
+                        let now = moment(new Date()); //todays date
+                        let end = moment(data); // another date
+                        let duration = moment.duration(now.diff(end));
+                        let days = duration.asDays();
+                        console.log(Math.round(days))
+                        if (days >= 0) {
+                            text = `<span class="badge badge-danger">${data == null ? '' : data}</span>`;
+                        }else{
+                            text = `<span class="badge badge-success">${data == null ? '' : data}</span>`;
+                        }
+                        if (type == 'display') {
+                            return text;
+                        } else {
+                            return data;
+                        }
+                    }
                 },
                 {
-                    data: "akl_file"
+                    data: "akl_file",
                 },
                 {
-                    data: "prod_desc"
+                    data: "prod_desc",
                 }
             ],
             buttons: [, {
