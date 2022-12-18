@@ -7,12 +7,15 @@
                 <thead class="thead-dark">
                     <tr>
                         <th class="text-center" style="width: 30px;">No</th>
-                        <th>Name</th>
-                        <th>Cat</th>
+                        <th>KODE</th>
+                        <th>DESC</th>
                         <th>AKL</th>
+                        <th>AKL START</th>
                         <th>AKL END</th>
                         <th>AKL FILE</th>
-                        <th>Desc</th>
+                        <th>AKL DESC</th>
+                        <th>CAT</th>
+                        <th>CAT DESC</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,11 +62,8 @@
 </div>
 
 <script>
-    var tabel = null;
     $(document).ready(function() {
         var table = $('#table').DataTable({
-            // processing: true,
-            // serverSide: true,
             rowId: 'prod_id',
             ajax: "<?= base_url('product/get_data/') ?>",
             dom: "<'dt--top-section'<'row'<'col-sm-12 col-md-6 d-flex justify-content-md-start justify-content-center'B><'col-sm-12 col-md-6 d-flex justify-content-md-end justify-content-center mt-md-0 mt-3'f>>>" +
@@ -94,10 +94,14 @@
                     data: "prod_code",
                 },
                 {
-                    data: "cat_name",
+                    data: "prod_desc",
                 },
                 {
                     data: "akl_name",
+                },
+                {
+                    data: "akl_start",
+                    visible: false,
                 },
                 {
                     data: "akl_end",
@@ -107,7 +111,6 @@
                         let end = moment(data); // another date
                         let duration = moment.duration(now.diff(end));
                         let days = duration.asDays();
-                        console.log(Math.round(days))
                         if (days >= 0) {
                             text = `<span class="badge badge-danger">${data == null ? '' : data}</span>`;
                         }else{
@@ -124,8 +127,16 @@
                     data: "akl_file",
                 },
                 {
-                    data: "prod_desc",
-                }
+                    data: "akl_desc",
+                    visible: false,
+                },
+                {
+                    data: "cat_name",
+                },
+                {
+                    data: "cat_desc",
+                    visible: false,
+                },
             ],
             buttons: [, {
                 text: '<i class="fa fa-plus"></i>Add',
