@@ -252,9 +252,9 @@ class Product extends CI_Controller
     }
 
 
-    public function tes($id)
-    {
-        $data = $this->db->update('products', ['akl_id' => null], ['prod_id' => $id]);
-        var_dump($data);
-    }
+    // public function tes($id)
+    // {
+    //     $data = $this->db->update('products', ['akl_id' => null], ['prod_id' => $id]);
+    //     var_dump($data);
+    // }
 }
